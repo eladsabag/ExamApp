@@ -4,8 +4,22 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.ConnectivityManager
+
 
 object AndroidUtils {
+
+    /**
+     * This function check if the device is connected to internet or not.
+     * @param context - The context is required in order to execute the check.
+     * @return true if the device is connected to internet, else false.
+     */
+    fun isConnectedToInternet(context: Context): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = cm.activeNetworkInfo
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting
+    }
+
     /**
      * This function check if the device has a GPS or not.
      * @param context - The context is required in order to execute the GPS check.

@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -34,7 +35,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import androidx.lifecycle.Observer
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elad.examapp.ui.dialogs.BluetoothFeatureDialog
 import com.elad.examapp.utils.AndroidUtils
 import com.elad.examapp.utils.Constants
@@ -83,7 +83,6 @@ class MapFragment : Fragment() {
     }
     private val locationBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Log.d(TAG, "onReceive")
             if (intent.action.equals(Constants.BROADCAST_NEW_LOCATION)) {
                 val json = intent.getStringExtra(Constants.BROADCAST_NEW_LOCATION_EXTRA_KEY)
                 val locationObject = Gson().fromJson(json, LocationObject::class.java)
@@ -224,12 +223,11 @@ class MapFragment : Fragment() {
      * Eventually, it removes the observer, which is no longer needed.
      */
     private fun consumeLocationsListObserve(listOfLocations : List<LocationObject>) {
-        Log.d(TAG, "consumeLocationsListObserve locationsListSize=${listOfLocations.size}")
         if (listOfLocations.isEmpty()) {
             // first time, get current location
             getCurrentLocation()
         } else {
-            listOfLocations.forEach { locationObject -> setMarkerAndCamera(locationObject) }
+            listOfLocations.forEach { locationObject -> handleNewLocation(locationObject) }
         }
         // stop observing after loading list
         viewModel.locationsListLiveData.removeObserver(locationsListObserver)
@@ -242,17 +240,28 @@ class MapFragment : Fragment() {
      * location and marker and update the database and ui accordingly.
      */
     private fun handleNewLocation(locationObject: LocationObject) {
-        Log.d(TAG, "handleNewLocation locationsListSize=${locationsList.size} markersListSize=${markers.size}")
-        if (locationsList.size == LOCATIONS_MAX_LIMIT && markers.size == LOCATIONS_MAX_LIMIT) {
+        if (!AndroidUtils.isConnectedToInternet(requireContext())) {
+            // notify user that he doesn't have network connected
+            Toast.makeText(requireContext(), "No network connection.", Toast.LENGTH_SHORT).show()
+        }
+
+        if (locationsList.size == LOCATIONS_MAX_LIMIT) {
             // delete last location, which is the first in the list
             viewModel.deleteLocation(locationsList.first())
             locationsList.removeFirst()
+        }
+        // must be separate from location if condition in case of app closed
+        if (markers.size == LOCATIONS_MAX_LIMIT) {
             // delete last marker, which is the first in the list
             markers.first().remove()
             markers.removeFirst()
         }
+        // add location to locations list
+        locationsList.add(locationObject)
         viewModel.insertNewLocation(locationObject)
-        setMarkerAndCamera(locationObject)
+
+        if (isAdded)
+            setMarkerAndCamera(locationObject)
     }
 
     /**
@@ -274,8 +283,7 @@ class MapFragment : Fragment() {
                             task.result.longitude,
                             task.result.altitude
                         )
-                        viewModel.insertNewLocation(locationObject)
-                        setMarkerAndCamera(locationObject)
+                        handleNewLocation(locationObject)
                     } else {
                         Log.e(TAG, "Cannot get current location: ", task.exception)
                     }
@@ -293,8 +301,6 @@ class MapFragment : Fragment() {
      * Eventually it adds the location and markers to the locations and markers lists.
      */
     private fun setMarkerAndCamera(locationObject: LocationObject) {
-        if (!isAdded) return // might try setting when application not visible, prevents system errors
-
         try {
             // get lat and lan from location object
             val latLng = LatLng(locationObject.lat, locationObject.lon)
@@ -313,8 +319,6 @@ class MapFragment : Fragment() {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
             // add marker to markers list
             markers.add(marker)
-            // add location to locations list
-            locationsList.add(locationObject)
         } catch (e : Exception) {
             e.printStackTrace()
         }

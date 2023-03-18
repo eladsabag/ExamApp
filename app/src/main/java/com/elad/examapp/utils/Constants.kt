@@ -6,7 +6,7 @@ object Constants {
     // Map Fragment
     const val LOCATIONS_MAX_LIMIT = 20
     // Location Service
-    const val LOCATION_INTERVAL = 1 * 1000L // desired location interval 1 min (expected location updates interval)
+    const val LOCATION_INTERVAL = 60 * 1000L // desired location interval 1 min (expected location updates interval)
     const val LOCATION_FASTEST_INTERVAL = LOCATION_INTERVAL / 2 // fastest interval allowed 30 sec (location updates may arrive faster than desired location interval)
     const val LOCATION_MAX_WAIT_TIME = LOCATION_INTERVAL * 2 // maximum interval delay 2 min (location updates may arrive longer than desired location interval)
     const val BROADCAST_NEW_LOCATION = "BROADCAST_NEW_LOCATION"

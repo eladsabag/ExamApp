@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Exam App</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="permissions_title">Permissions Required</string>
+    <string name="location_message">Location permissions are required for application usage.</string>
+    <string name="bluetooth_message">Bluetooth permissions are required for application usage.</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="map">Map</string>
+    <string name="history">History</string>
+    <string name="please_enable_bluetooth_feature">Please enable bluetooth feature.</string>
+    <string name="search">Search</string>
+    <string name="unnamed">Unnamed</string>
+    <string name="permissions_message">One or more of app permissions isn\'t granted. In order to use this feature you will need to grant location and bluetooth permissions.</string>
+    <string name="bluetooth_device_list">Bluetooth Device List</string>
+    <string name="my_location">My Location</string>
+    <string name="app_running">App running…</string>
+</resources>

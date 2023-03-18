@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="deviceName"
+            type="String" />
+        <variable
+            name="macAddress"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/device_item_lay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="12dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{deviceName == null || deviceName.equals(``) ? @string/unnamed : deviceName}"
+                tools:text="@string/unnamed"
+                android:textSize="16sp"
+                android:textColor="@color/colorGreyDark"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{macAddress}"
+                tools:text="CD:D6:AD:3D:C5:FG:4G"
+                android:textSize="15sp"
+                android:textColor="@color/colorGreyDark"/>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bluetooth_resized"
+            android:contentDescription="@string/app_name" />
+    </LinearLayout>
+</layout>

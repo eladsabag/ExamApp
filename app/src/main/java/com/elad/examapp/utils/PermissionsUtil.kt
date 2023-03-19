@@ -80,13 +80,6 @@ object PermissionsUtil {
     }
 
     /**
-     * This function request for camera permission.
-     * The permission: CAMERA.
-     * @param permissionLauncher - The launcher that suppose to execute the request.
-     */
-    fun requestCameraPermission(permissionLauncher: ActivityResultLauncher<String>) {  permissionLauncher.launch(Manifest.permission.CAMERA) }
-
-    /**
      * This function check if the user has location permissions.
      * The permissions: ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION.
      * @param context - The context is required in order to execute the permissions check.
@@ -101,12 +94,4 @@ object PermissionsUtil {
                     ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED
                 }
     }
-
-    /**
-     * This function check if the user has camera permission.
-     * The permissions: CAMERA.
-     * @param context - The context is required in order to execute the permission check.
-     * @return true if has camera permission else false
-     */
-    fun hasCameraPermission(context: Context) = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
 }
